@@ -5,12 +5,11 @@ from webapp.models import Product
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'description', 'remaining_amount', 'price', 'category']
+    list_display = ['id', 'name', 'description', 'price', 'category']
     list_display_links = ['id']
     list_filter = ['category']
     search_fields = ['name', 'id']
-    fields = ['name', 'description', 'remaining_amount', 'price', 'category']
-    readonly_fields = ['price', 'category']
+    fields = ['name', 'description', 'remain', 'price', 'category']
 
 
 admin.site.register(Product, ProductAdmin)
