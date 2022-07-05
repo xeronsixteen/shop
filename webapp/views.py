@@ -52,9 +52,17 @@ def update(request, pk):
 
 
 def delete(request, pk):
-    post = get_object_or_404(Product, pk=pk)
+    product = get_object_or_404(Product, pk=pk)
     if request.method == 'GET':
-        return render(request, "delete.html", {"post": post})
+        return render(request, "delete.html", {"product": product})
     else:
-        post.delete()
+        product.delete()
         return redirect('index')
+
+
+def product_view(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == 'GET':
+        return render(request, "product_view.html", {"product": product})
+
+
