@@ -8,7 +8,7 @@ from webapp.models import Product
 
 
 def index(request):
-    products = Product.objects.order_by('name')
+    products = Product.objects.order_by('category', 'name')
     context = {'products': products}
     return render(request, 'index.html', context)
 
