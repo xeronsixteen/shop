@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+        <p>
+            TITLE: {{ product.name }}
+        </p>
+        <p>
+            BIO: {{ product.description }}
+        </p>
+        <p>
+            QUANTITY: {{ product.remain }}
+        </p>
+         <p>
+            PRICE: {{ product.price }}
+        </p>
+         <p>
+            CATEGORY: {{ product.category }}
+        </p>
+<a href="/">To main page</a>
+{% endblock %}
