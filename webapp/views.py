@@ -1,4 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse_lazy, reverse
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 
 from webapp.forms import ProductForm
 from webapp.models import Product
@@ -7,62 +9,38 @@ from webapp.models import Product
 # Create your views here.
 
 
-def index(request):
-    products = Product.objects.order_by('category', 'name')
-    context = {'products': products}
-    return render(request, 'index.html', context)
+class ProductListView(ListView):
+    template_name = 'index.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        return Product.objects.all().order_by('category', 'name')
 
 
-def create(request):
-    if request.method == 'GET':
-        form = ProductForm
-        return render(request, "create.html", {'form': form})
-    else:
-        form = ProductForm(data=request.POST)
-        if form.is_valid():
-            name = form.cleaned_data.get('name')
-            description = form.cleaned_data.get('description')
-            price = form.cleaned_data.get('price')
-            remain = form.cleaned_data.get('remain')
-            new_product = Product.objects.create(name=name, description=description, price=price, remain=remain)
-            return redirect('index')
-        return render(request, 'create.html', {'form': form})
+class ProductCreateView(CreateView):
+    template_name = 'create.html'
+    form_class = ProductForm
+
+    def get_success_url(self):
+        return reverse('product_view', kwargs={"pk": self.object.pk})
 
 
-def update(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    if request.method == 'GET':
-        form = ProductForm(initial={
-            'name': product.name,
-            'description': product.description,
-            'price': product.price,
-            'remain': product.remain
+class ProductUpdateView(UpdateView):
+    form_class = ProductForm
+    template_name = 'update.html'
+    model = Product
 
-        })
-        return render(request, "update.html", {'form': form})
-    else:
-        form = ProductForm(data=request.POST)
-        if form.is_valid():
-            product.name = form.cleaned_data.get('name')
-            product.description = form.cleaned_data.get('description')
-            product.price = form.cleaned_data.get('price')
-            product.save()
-            return redirect('index')
-        return redirect('index', {'form': form})
+    def get_success_url(self):
+        return reverse('product_view', kwargs={"pk": self.object.pk})
 
 
-def delete(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    if request.method == 'GET':
-        return render(request, "delete.html", {"product": product})
-    else:
-        product.delete()
-        return redirect('index')
+class ProductDeleteView(DeleteView):
+    model = Product
+    template_name = 'delete.html'
+    success_url = reverse_lazy('index')
 
 
-def product_view(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    if request.method == 'GET':
-        return render(request, "product_view.html", {"product": product})
-
-
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'product_view.html'
+    success_url = reverse_lazy('product_view')
