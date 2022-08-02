@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from django.forms import widgets
 from webapp.models import CATEGORY_CHOICES, Product
 
@@ -7,13 +8,16 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = '__all__'
-    # name = forms.CharField(max_length=50, required=True, label='Name')
-    # description = forms.CharField(max_length=500, required=True, label='Text',
-    #                               widget=widgets.Textarea(attrs={"cols": 40,
-    #                                                              "rows": 3}))
-    # remain = forms.IntegerField(min_value=0, required=True)
-    # price = forms.DecimalField(decimal_places=2, max_digits=7, required=True)
-    # category = forms.ChoiceField(required=True, choices=CATEGORY_CHOICES)
+
+    def clean_remain(self):
+        remain = self.cleaned_data.get("remain")
+        if remain < 0:
+            raise ValidationError("Остаток не может быть 0")
+        return remain
+
+
+class SearchForm(forms.Form):
+    search = forms.CharField(max_length=50, required=False, label='Find')
 
 
 
