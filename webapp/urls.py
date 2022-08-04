@@ -1,7 +1,9 @@
 from django.urls import path
 
-from webapp.views import ProductListView, ProductCreateView, \
+from webapp.views.product_view import ProductListView, ProductCreateView, \
     ProductUpdateView, ProductDeleteView, ProductDetailView
+
+app_name = 'webapp'
 
 urlpatterns = [
     path('', ProductListView.as_view(), name='index'),
