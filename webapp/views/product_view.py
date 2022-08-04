@@ -21,12 +21,16 @@ class ProductListView(SearchView):
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'product/product_view.html'
+    queryset = Product.objects.filter(remain__gt=0)
 
 
 class ProductCreateView(CreateView):
     model = Product
     template_name = 'product/create.html'
     form_class = ProductForm
+
+    def get_success_url(self):
+        return reverse('webapp:product_view', kwargs={'pk': self.object.pk})
 
 
 class ProductUpdateView(UpdateView):

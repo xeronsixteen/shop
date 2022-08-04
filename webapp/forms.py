@@ -7,7 +7,7 @@ from webapp.models import CATEGORY_CHOICES, Product
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = '__all__'
+        exclude = []
 
     def clean_remain(self):
         remain = self.cleaned_data.get("remain")
