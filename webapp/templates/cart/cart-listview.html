@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h3>Cart</h3>
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Price</th>
+          <th scope="col">Total</th>
+          <th>Delete Option</th>
+          <th>Delete Option</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for cart in carts %}
+        <tr>
+          <td>{{ cart.product.name }}</td>
+          <td>{{ cart.qty }}</td>
+          <td>{{ cart.product.price }}</td>
+          <td>{{ cart.get_product_total }}</td>
+          <td><a href={% url 'webapp:delete_from_cart' cart.pk %}>Delete</a></td>
+          <td><a href={% url 'webapp:delete_one_from_cart' cart.pk %}>Delete by one</a></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    <h5>Total price: {{ total }}</h5>
+{% endblock %}
+

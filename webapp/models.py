@@ -36,6 +36,16 @@ class Cart(models.Model):
         verbose_name = 'Product in Cart'
         verbose_name_plural = 'Products in Cart'
 
+    def get_product_total(self):
+        return self.qty * self.product.price
+
+    @classmethod
+    def get_total_price(cls):
+        total = 0
+        for cart in cls.objects.all():
+            total += cart.get_product_total()
+        return total
+
 
 class Order(models.Model):
     name = models.CharField(verbose_name='name', max_length=50)
