@@ -26,5 +26,9 @@
       </tbody>
     </table>
     <h5>Total price: {{ total }}</h5>
+    <form action="{% url 'webapp:create_order' %}" method="post">
+    {% include "partial/form.html" with button_text="Checkout" %}
+</form>
+
 {% endblock %}
 

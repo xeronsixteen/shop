@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import widgets
-from webapp.models import CATEGORY_CHOICES, Product, Cart
+from webapp.models import CATEGORY_CHOICES, Product, Cart, Order
 
 
 class ProductForm(forms.ModelForm):
@@ -25,6 +25,13 @@ class CartForm(forms.ModelForm):
     class Meta:
         model = Cart
         fields = ['qty']
+
+
+class OrderForm(forms.ModelForm):
+
+    class Meta:
+        model = Order
+        fields = ['name', 'phone', 'address']
 
 
 

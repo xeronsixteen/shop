@@ -3,8 +3,8 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView, DeleteView
 
-from webapp.forms import CartForm
-from webapp.models import Cart, Product
+from webapp.forms import CartForm, OrderForm
+from webapp.models import Cart, Product, Order, OrderProduct
 
 
 class CartAddView(CreateView):
@@ -44,6 +44,7 @@ class CartListView(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=None, **kwargs)
         context['total'] = Cart.get_total_price()
+        context['form'] = OrderForm()
         return context
 
 
@@ -72,4 +73,38 @@ class CartDeleteByOneView(DeleteView):
         else:
             cart.save()
         return HttpResponseRedirect(success_url)
+
+
+class CreateOrderView(CreateView):
+    model = Order
+    form_class = OrderForm
+    success_url = reverse_lazy('webapp:index')
+
+    # def form_valid(self, form):
+    #     order = form.save()
+    #
+    #     for item in Cart.objects.all():
+    #         OrderProduct.objects.create(product=item.product, qty = item.qty, order=order)
+    #         item.product.remain -= item.qty
+    #         item.product.save()
+    #         item.delete()
+    #     return HttpResponseRedirect(self.success_url())
+
+    def form_valid(self, form):
+        print(form)
+        order = form.save()
+
+        products = []
+        order_products = []
+
+        for item in Cart.objects.all():
+            order_products.append(OrderProduct(product=item.product, qty=item.qty, order=order))
+            item.product.remain -= item.qty
+            products.append(item.product)
+
+        OrderProduct.objects.bulk_create(order_products)
+        Product.objects.bulk_update(products, ("remain",))
+        Cart.objects.all().delete()
+        return HttpResponseRedirect(self.success_url)
+
 
